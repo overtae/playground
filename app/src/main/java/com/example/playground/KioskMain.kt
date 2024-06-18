@@ -1,25 +1,38 @@
 package com.example.playground
 
-import kotlin.concurrent.thread
+import kotlinx.coroutines.delay
+import java.util.Timer
+import java.util.TimerTask
+import kotlin.math.round
 
 var menuList = ArrayList<Menu>()
+var cart = ArrayList<Cart>()
+var orderList = ArrayList<Order>()
+var money = 0.0
 
-fun main() {
-    var isKioskFinished = false
-
+suspend fun main() {
     init()
+    val timer = checkOrderWaiting()
 
-    thread(start = true) {
-        displayMenu()
-        isKioskFinished = true
+    println("예산을 입력해주세요.")
+    money = getInput().let {
+        round(it * 10) / 10
     }
 
-    thread(start = true) {
-        while (!isKioskFinished) {
-            Thread.sleep(5000)
-            Order.displayWaiting()
+    while (true) {
+        println("\"SHAKESHACK BURGER 에 오신걸 환영합니다.\"")
+        println("아래 메뉴판을 보시고 메뉴를 골라 입력해주세요.\n")
+
+        when (val selectedMenuNumber = getMenuInput()) {
+            0 -> break
+            5 -> handlePurchase()
+            6 -> handleOrderList()
+            else -> handleSubMenu(selectedMenuNumber)
         }
+        globalDelay(3000)
     }
+    println("프로그램을 종료합니다.")
+    timer.cancel()
 }
 
 fun init() {
@@ -65,29 +78,66 @@ fun init() {
     menu.map { menuList.add(it) }
 }
 
-fun displayMenu() {
-    println("예산을 입력해주세요.")
-    val order = Order(getInput())
-
-    while (true) {
-        println("\"SHAKESHACK BURGER 에 오신걸 환영합니다.\"")
-        println("아래 메뉴판을 보시고 메뉴를 골라 입력해주세요.\n")
-
-        when (val selectedMenuNumber = getMenuInput(order)) {
-            0 -> break
-            5 -> order.displayOrderMenu()
-            6 -> order.clearCart()
-            else -> {
-                handleSubMenu(selectedMenuNumber, order)
-                continue
-            }
-        }
-        Thread.sleep(3000)
-    }
-    println("프로그램을 종료합니다.")
+suspend fun globalDelay(time: Long) {
+    delay(time)
 }
 
-fun handleSubMenu(selectedMenuNumber: Int, order: Order) {
+fun checkOrderWaiting(): Timer {
+    val timer = Timer()
+    timer.schedule(object : TimerTask() {
+        override fun run() {
+            println("\n현재 주문 대기수: ${orderList.size}\n")
+        }
+    }, 0, 5000)
+    return timer
+}
+
+fun handleOrderList() {
+    println("[ Waiting Orders ]")
+    orderList.mapIndexed { i, item ->
+        print("${i + 1}. ")
+        item.displayInfo()
+    }
+    println("0. 뒤로가기")
+
+    val selectedOrderNumber = getInput(0..orderList.size)
+    if (selectedOrderNumber == 0) return
+
+    // 확인
+    orderList[selectedOrderNumber - 1].displayInfo()
+    println("위 주문을 취소하시겠습니까?")
+    println("1. 확인        2. 취소\n")
+
+    val confirmInput = getInput(1..2)
+    if (confirmInput == 2) return
+
+    orderList.removeAt(selectedOrderNumber - 1)
+    println("주문을 취소했습니다.")
+}
+
+fun handlePurchase() {
+    val maxCartLength = cart.maxOfOrNull { it.subMenu.name.length } ?: 0
+    val total = cart.sumOf { it.subMenu.price }
+
+    println("\n아래와 같이 주문 하시겠습니까? (현재 주문 대기수: ${orderList.size})\n")
+    println("[ Orders ]")
+    cart.map { it.subMenu.displayInfo(maxCartLength) }
+    println("\n[ Total ]")
+    println("W $total (잔액: W $money)")
+    println("1. 주문      2. 메뉴판\n")
+
+    // 사용자 입력
+    val input = getInput(1..2)
+    if (input == 2) return
+
+    // 주문
+    val order = Order(cart)
+    cart.clear()
+    if (order.purchase(money)) return
+    orderList.add(order)
+}
+
+fun handleSubMenu(selectedMenuNumber: Int) {
     val selectedMenu = menuList[selectedMenuNumber - 1]
     val subMenu = getMenuList(selectedMenu.name)
     val formatLength = subMenu.maxOfOrNull { it.name.length } ?: 0
@@ -114,13 +164,12 @@ fun handleSubMenu(selectedMenuNumber: Int, order: Order) {
         val input = getInput(1..2)
         if (input == 2) continue
 
-        order.addToCart(subMenu[input - 1] as SubMenu)
-        Thread.sleep(3000)
+        cart.add(Cart(selectedSubMenu))
         return
     }
 }
 
-fun getMenuInput(currentOrder: Order): Int {
+fun getMenuInput(): Int {
     val menu = getMenuList("menu")
     val menuFormatLength = menu.maxOfOrNull { it.name.length } ?: 0
     val (main, order) = menu.partition { "주문" !in it.description }
@@ -131,7 +180,7 @@ fun getMenuInput(currentOrder: Order): Int {
         print("${i + 1}. ")
         item.displayInfo(menuFormatLength)
     }
-    if (currentOrder.cart.isNotEmpty()) {
+    if (cart.isNotEmpty()) {
         menuSize = menu.size
         println("\n[ ORDER MENU ]")
         order.mapIndexed { i, item ->
