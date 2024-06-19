@@ -3,24 +3,18 @@ package com.example.playground
 fun main() {
     val worldName = "스코월드"
 
-    println("이름을 입력해주세요")
-    var myName = readLine()!!
+    var myName = inputMyInfo("name").toString()
 
-    println("나이를 입력해주세요")
-    var myAge = readLine()!!.toInt()
+    var myAge = inputMyInfo("age").toString().toInt()
+    print(myAge)
 
-    println("직업을 입력해주세요")
-    var myJob = readLine()!!
+    var myJob = inputMyInfo("job").toString()
 
-    println("성별을 입력해주세요")
-    var myGender = readLine()!!
+    var myGender = inputMyInfo("gender").toString()
 
-    println("초기자본을 입력해주세요")
-    var myMoney = readLine()!!.toInt()
+    var myMoney = inputMyInfo("money").toString().toInt()
 
-    println("초기체력 입력해주세요")
-    var myHp = readLine()!!.toInt()
-    var myMp = 0
+    var myHp = inputMyInfo("hp").toString().toInt()
 
     var isNamePass = true
     var isAgePass = true
@@ -50,12 +44,12 @@ fun main() {
 
         if (myJob == "마법사") {
             println("마법사는 초기 mp도 입력해주세요")
-            myMp = readLine()!!.toInt()
+            var myMp = inputMyInfo("mp").toString().toInt()
             var myCharacter = Wizard(myName, myAge, myGender, myMoney, myHp, myMp)
 
             println("던전을 선택해주세요")
             println("[1] 슬라임동굴, [2] 좀비마을")
-            var selectWorld = readLine()!!.toInt()
+            var selectWorld = inputMyInfo("selectWorld").toString().toInt()
             selectWorldByWizard(selectWorld, myCharacter)
 
         } else if (myJob == "궁수") {
@@ -64,7 +58,7 @@ fun main() {
 
             println("던전을 선택해주세요")
             println("[1] 슬라임동굴, [2] 좀비마을")
-            var selectWorld = readLine()!!.toInt()
+            var selectWorld = inputMyInfo("selectWorld").toString().toInt()
             selectWorldByArcher(selectWorld, myCharacter)
         }
     }
@@ -106,5 +100,121 @@ fun selectWorldByWizard(selectWorld: Int, myCharacter: Wizard) {
         var zombie1 = Zombie("파랑좀비", "파랑", 142.2, 500, 25)
         zombie1.virus()
         myCharacter.fireBall()
+    }
+}
+
+fun inputMyInfo(type: String): Any? {
+    return when (type) {
+        "name" -> {
+            println("이름을 입력해주세요")
+            while (true) {
+                try {
+                    var originName = readLine()
+                    if (originName?.first() != '_' && originName?.first() != '!') {
+                        return originName
+                    } else {
+                        println("이름을 다시 입력해주세요")
+                    }
+                } catch (e: Exception) {
+                    println("이름을 다시 입력해주세요")
+                }
+            }
+        }
+
+        "age" -> {
+            println("나이를 입력해주세요")
+            while (true) {
+                try {
+                    var originAge: String? = readLine()
+                    return originAge?.toInt() ?: -1
+                } catch (e: Exception) {
+                    println("나이를 다시 입력해주세요")
+                }
+            }
+        }
+
+        "job" -> {
+            println("직업을 입력해주세요")
+            while (true) {
+                try {
+                    var originName = readLine()
+                    if (originName?.equals("궁수") == true || originName?.equals("마법사") == true) {
+                        return originName
+                    } else {
+                        println("직업을 다시 입력해주세요")
+                    }
+                } catch (e: Exception) {
+                    println("직업을 다시 입력해주세요")
+                }
+            }
+        }
+
+        "gender" -> {
+            println("성별을 입력해주세요")
+            while (true) {
+                try {
+                    var originGender = readLine()
+                    if (originGender?.equals("남") == true || originGender?.equals("여") == true) {
+                        return originGender
+                    } else {
+                        println("성별을 다시 입력해주세요")
+                    }
+                } catch (e: Exception) {
+                    println("성별을 다시 입력해주세요")
+                }
+            }
+        }
+
+        "money" -> {
+            println("초기자본을 입력해주세요")
+            while (true) {
+                try {
+                    var originMoney: String? = readLine()
+                    return originMoney?.toInt() ?: -1
+                } catch (e: Exception) {
+                    println("초기자본을 다시 입력해주세요")
+                }
+            }
+        }
+
+        "hp" -> {
+            println("초기체력을 입력해주세요")
+            while (true) {
+                try {
+                    var originHp: String? = readLine()
+                    return originHp?.toInt() ?: -1
+                } catch (e: Exception) {
+                    println("초기체력을 다시 입력해주세요")
+                }
+            }
+        }
+
+        "mp" -> {
+            println("초기마나를 입력해주세요")
+            while (true) {
+                try {
+                    var originMp: String? = readLine()
+                    return originMp?.toInt() ?: -1
+                } catch (e: Exception) {
+                    println("초기마나를 다시 입력해주세요")
+                }
+            }
+        }
+
+        "selectWorld" -> {
+            println("월드를 선택해주세요")
+            while (true) {
+                try {
+                    var selectWorld: String? = readLine()
+                    return selectWorld?.toInt() ?: -1
+                } catch (e: Exception) {
+                    println("월드를 다시 선택해주세요")
+                }
+            }
+        }
+
+        else -> {
+            return "no"
+        }
     }
 }

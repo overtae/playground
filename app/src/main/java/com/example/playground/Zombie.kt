@@ -1,19 +1,20 @@
 package com.example.playground
 
 class Zombie : Monster {
-    var name: String = ""
-    var color: String = ""
-    var height: Double = 0.0
-    var hp: Int = 0
-    var damage: Int = 0
+    var name: String
+    var color: String
+    var height: Double
+    var hp: Int
+    var damage: Int
 
     constructor(_name: String, _color: String, _height: Double, _hp: Int, _damage: Int) {
-        println("${name}좀비 생성")
+//        println("${name}좀비 생성")
         name = _name
         color = _color
         height = _height
         hp = _hp
         damage = _damage
+        println("${name}좀비 생성")
     }
 
     override fun attack() {
