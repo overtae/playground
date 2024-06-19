@@ -1,6 +1,6 @@
 package com.example.playground
 
-class Archer {
+class Archer : Character {
     var name: String = ""
     var age: Int = 0
     var gender: String = ""
@@ -16,7 +16,7 @@ class Archer {
         hp = _hp
     }
 
-    fun attack() {
+    override fun attack() {
         println("활쏘기!")
     }
 

@@ -85,6 +85,8 @@ fun selectWorldByArcher(selectWorld: Int, myCharacter: Archer) {
         slime1.attack()
         myCharacter.windArrow()
 
+        slime1.poison()
+
     } else if (selectWorld == 2) { // 좀비 던전
         var zombie1 = Zombie("파랑좀비", "파랑", 142.2, 500, 25)
         zombie1.virus()
@@ -94,9 +96,11 @@ fun selectWorldByArcher(selectWorld: Int, myCharacter: Archer) {
 
 fun selectWorldByWizard(selectWorld: Int, myCharacter: Wizard) {
     if (selectWorld == 1) { // 슬라임 던전
-        var slime1 = Slime("초록슬라임", "초록", 30.2, 200, 10)
+        var slime1 = Slime("파랑슬라임", "파랑", 30.2, 200, 10)
         slime1.attack()
         myCharacter.attack()
+
+        slime1.poison()
 
     } else if (selectWorld == 2) { // 좀비 던전
         var zombie1 = Zombie("파랑좀비", "파랑", 142.2, 500, 25)
