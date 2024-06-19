@@ -6,8 +6,10 @@ class Archer : Character {
     var gender: String
     var money: Int
     var hp: Int
+    var weapons: MutableList<String>
 
     constructor(_name: String, _age: Int, _gender: String, _money: Int, _hp: Int) {
+        weapons = mutableListOf<String>()
         name = _name
         age = _age
         gender = _gender

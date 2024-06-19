@@ -7,8 +7,10 @@ class Wizard : Character {
     var money: Int
     var hp: Int
     var mp: Int
+    var weapons: MutableList<String>
 
     constructor(_name: String, _age: Int, _gender: String, _money: Int, _hp: Int, _mp: Int) {
+        weapons = mutableListOf<String>()
         name = _name
         age = _age
         gender = _gender
