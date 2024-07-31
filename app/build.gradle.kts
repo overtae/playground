@@ -39,6 +39,12 @@ android {
 }
 
 dependencies {
+    implementation(libs.gson)
+    implementation(libs.squareup.retrofit2)
+    implementation(libs.squareup.converter.gson)
+    implementation(libs.squareup.okhttp3)
+    implementation(libs.squareup.logging.interceptor)
+    implementation(libs.skydoves.powerspinner)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
