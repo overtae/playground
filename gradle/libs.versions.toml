@@ -14,7 +14,7 @@ fragmentKtx = "1.8.2"
 gson = "2.10.1"
 retrofit2 = "2.9.0"
 okhttp3 = "4.10.0"
-powerSpinner = "1.2.6"
+powerSpinner = "1.2.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
